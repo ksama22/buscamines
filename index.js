@@ -1,8 +1,12 @@
 //Matrix a de ser global per reutilizar
 var matrix = null;
+var minesArray = null;
+var mines = 8;
 
 //Exercici 2
 function inicialitzaJoc() {
+    document.getElementById('git').innerText = mines + " contributions in the last year";
+
     //Esborra la taula creada (si ha sigut creada)
     erase();
     //Selecciona els dos imputs
@@ -32,6 +36,8 @@ function inicialitzaJoc() {
     document.getElementById('taulell').appendChild(tbl);
     //Emplena la variable matrix
     matrix = matriuBinaria()
+
+    inicialitzaMines(rows, cols, mines);
 }
 
 //Exercici 2
@@ -60,7 +66,33 @@ function erase() {
     //Acabat el bucle 'taulell' no tindria cap fill
 }
 
+
+function inicialitzaMines(midaX, midaY, nMines) {
+    //mines = [midaX][midaY];
+    let color = "green";
+    let numTotal = 0;
+    if (midaX * midaY >= nMines) {
+        do {
+            let x = maxmin(0, midaX);
+            let y = maxmin(0, midaY);
+            if (matrix[x][y].style.background != color) {
+                matrix[x][y].style.background = color;
+                numTotal++;
+            }
+        } while (numTotal < nMines);
+    }else{
+        console.log("Se lo que intentabas");
+    }
+    return matrix;
+}
+
 //Comproba que pinta per 'x' & 'y', cridar despres de inicialitzaJoc()
-function testColor(x,y) {
+function testColor(x, y) {
     matrix[x][y].style.background = "red";
 }
+
+function maxmin(min, max) {
+    return parseInt(Math.random() * (max - min) + min);
+
+}
+
