@@ -1,12 +1,10 @@
 //Matrix a de ser global per reutilizar
-var matrix = null;
-var minesArray = null;
-var mines = 8;
+var matrixTable = null;
+var matrixMines = null;
+var nMines = 8;
 
 //Exercici 2
 function inicialitzaJoc() {
-    document.getElementById('git').innerText = mines + " contributions in the last year";
-
     //Esborra la taula creada (si ha sigut creada)
     erase();
     //Selecciona els dos imputs
@@ -35,24 +33,23 @@ function inicialitzaJoc() {
     //Afegeix la <table> a <div> amb id 'taulell"
     document.getElementById('taulell').appendChild(tbl);
     //Emplena la variable matrix
-    matrix = matriuBinaria()
-
-    inicialitzaMines(rows, cols, mines);
+    matrixTable = matriuHTML()
+    matrixMines = inicialitzaMines(rows, cols, nMines);
 }
 
 //Exercici 2
-function matriuBinaria() {
+function matriuHTML() {
     ///Agafa els fills del <tbody>
     let rows = document.querySelector("tbody").children
     //Inicialitza una matrix
-    let matrix = []
+    let matrixBi = []
     //Recorre tots els fills de <tbody>
     for (var i = 0; i < rows.length; i++) {
         //Fica a la 'matrix' tots els fills de <tbody> 1 per 1
-        matrix.push(rows[i].children)
+        matrixBi.push(rows[i].children)
     }
     // console.log("matriu", matrix);
-    return matrix;
+    return matrixBi;
 }
 
 function erase() {
@@ -66,33 +63,53 @@ function erase() {
     //Acabat el bucle 'taulell' no tindria cap fill
 }
 
+function matriuBinaria(midaX, midaY) {
+    let finalMatrix = [];
+    for (let i = 0; i < midaY; i++) {
+        let arrayX = [];
+        for (let j = 0; j < midaX; j++) {
+            arrayX.push(0);
+        }
+        finalMatrix.push(arrayX);
+    }
+    return finalMatrix;
+}
 
 function inicialitzaMines(midaX, midaY, nMines) {
-    //mines = [midaX][midaY];
-    let color = "green";
+
+    //Crea matrix binaria
+    let finalMatrix = matriuBinaria(midaX, midaY);
+
+    //Omple matrix same size
     let numTotal = 0;
     if (midaX * midaY >= nMines) {
         do {
             let x = maxmin(0, midaX);
             let y = maxmin(0, midaY);
-            if (matrix[x][y].style.background != color) {
-                matrix[x][y].style.background = color;
+            if (finalMatrix[x][y] == 0) {
+                finalMatrix[x][y] = 1;
                 numTotal++;
             }
         } while (numTotal < nMines);
-    }else{
+    } else {
         console.log("Se lo que intentabas");
     }
-    return matrix;
+    return finalMatrix;
 }
 
 //Comproba que pinta per 'x' & 'y', cridar despres de inicialitzaJoc()
-function testColor(x, y) {
-    matrix[x][y].style.background = "red";
+function testMines() {
+    document.getElementById('git').innerText = nMines + " contributions in the last year";
+    for (let i = 0; i < matrixTable.length; i++) {
+        for (let j = 0; j < matrixTable.length; j++) {
+            if (matrixMines[i][j] == 1) {
+                matrixTable[i][j].style.background = "green";
+            }
+        }
+    }
 }
 
 function maxmin(min, max) {
     return parseInt(Math.random() * (max - min) + min);
-
 }
 
