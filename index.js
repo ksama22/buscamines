@@ -1,6 +1,7 @@
 //Matrix a de ser global per reutilizar
 var matrixTable = null;
 var matrixMines = null;
+var matriuBinari = null;
 var nMines = 8;
 
 //Exercici 2
@@ -21,7 +22,20 @@ function inicialitzaJoc() {
         const row = document.createElement("tr");
         for (let j = 0; j < cols; j++) {
             //Crea tants <td> com cols
-            const cell = document.createElement("td");
+            let cell = document.createElement("td");
+            //Posa una id
+            cell.id = i + '-' + j;
+            //li posa la funciona a cada cella per event
+            cell.onclick = function (event) {
+                let pos = (event.target.id).split("-");
+                if (matrixMines[pos[0]][pos[1]] == 1) {
+                    explotarMines();
+                } else {
+                    matrixTable[pos[0]][pos[1]].style.background = "blue";
+                    console.log('Posicio: ', pos[0], " & ", pos[1], matrixMines[pos[0]][pos[1]]);
+
+                }
+            };
             //Afegeix els <td> dintre del <tr> 
             row.appendChild(cell);
         }
@@ -34,8 +48,12 @@ function inicialitzaJoc() {
     document.getElementById('taulell').appendChild(tbl);
     //Emplena la variable matrix
     matrixTable = matriuHTML()
+    matrixBinari = matriuBinaria(rows, cols);
     matrixMines = inicialitzaMines(rows, cols, nMines);
+    //explotarMines();
 }
+
+
 
 //Exercici 2
 function matriuHTML() {
@@ -79,7 +97,6 @@ function inicialitzaMines(midaX, midaY, nMines) {
 
     //Crea matrix binaria
     let finalMatrix = matriuBinaria(midaX, midaY);
-
     //Omple matrix same size
     let numTotal = 0;
     if (midaX * midaY >= nMines) {
@@ -98,12 +115,12 @@ function inicialitzaMines(midaX, midaY, nMines) {
 }
 
 //Comproba que pinta per 'x' & 'y', cridar despres de inicialitzaJoc()
-function testMines() {
-    document.getElementById('git').innerText = nMines + " contributions in the last year";
+function explotarMines() {
+    document.getElementById('git').innerText = nMines + " MAKE BOOM";
     for (let i = 0; i < matrixTable.length; i++) {
         for (let j = 0; j < matrixTable.length; j++) {
             if (matrixMines[i][j] == 1) {
-                matrixTable[i][j].style.background = "green";
+                matrixTable[i][j].style.background = "red";
             }
         }
     }
