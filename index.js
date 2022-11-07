@@ -31,7 +31,7 @@ function inicialitzaJoc() {
                 if (matrixMines[pos[0]][pos[1]] == 1) {
                     explotarMines();
                 } else {
-                    matrixTable[pos[0]][pos[1]].style.background = "blue";
+                    matrixTable[pos[0]][pos[1]].style.background = "lightgray";
                     console.log('Posicio: ', pos[0], " & ", pos[1], matrixMines[pos[0]][pos[1]]);
 
                 }
@@ -50,7 +50,7 @@ function inicialitzaJoc() {
     matrixTable = matriuHTML()
     matrixBinari = matriuBinaria(rows, cols);
     matrixMines = inicialitzaMines(rows, cols, nMines);
-    //explotarMines();
+    explotarMines();
 }
 
 
@@ -99,12 +99,15 @@ function inicialitzaMines(midaX, midaY, nMines) {
     let finalMatrix = matriuBinaria(midaX, midaY);
     //Omple matrix same size
     let numTotal = 0;
+    console.log("midesx",midaX,"midey",midaY);
     if (midaX * midaY >= nMines) {
         do {
             let x = maxmin(0, midaX);
             let y = maxmin(0, midaY);
-            if (finalMatrix[x][y] == 0) {
-                finalMatrix[x][y] = 1;
+            console.log("x",x,"y",y);
+
+            if (finalMatrix[y][x] == 0) {
+                finalMatrix[y][x] = 1;
                 numTotal++;
             }
         } while (numTotal < nMines);
