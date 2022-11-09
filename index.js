@@ -24,6 +24,8 @@ function inicialitzaJoc() {
             let cell = document.createElement("td");
             //Posa una id
             cell.id = i + '-' + j;
+            //Un padding buit es veu estrany al ficar el 1r numero
+            cell.innerText=".";
             //Crida la funcion dins de a variable 'funcionClicar'
             cell.onclick = funcionClicar;
             //Afegeix els <td> dintre del <tr> 
@@ -51,6 +53,10 @@ var funcionClicar = function (event) {
         explotarMines();
         console.log("KABOOM");
     } else {
+        // Pinta un cercle al voltant de la casella selecionada
+        console.log('posarray', pos[0], ' - ', pos[1], 'paintNeighbours(' + pos[0] + "," + pos[1] + ")");
+        //paintNeighbours(pos[0], pos[1]); //es en bucle?
+        // Pinta el mitg de gris
         matrixTable[pos[0]][pos[1]].style.background = "lightgray";
         //console.log('Posicio: ', pos[0], " & ", pos[1], matrixMines[pos[0]][pos[1]]);
 
@@ -129,5 +135,59 @@ function explotarMines() {
 
 function maxmin(min, max) {
     return parseInt(Math.random() * (max - min) + min);
+}
+
+/* COPIA D'EXERCICIS ANTERIORS */
+// Pinta un cercle al voltant de la casella selecionada
+function paintNeighbours(inputX, inputY) {
+    for (let i = inputX - 1; i <= inputX + 1; i++) {
+        for (let j = inputY - 1; j <= inputY + 1; j++) {
+            //Fila mes gran a o igual a 0 i mes petita que la fila(taula)  
+            //Columna mes gran a i igual 0 i mes petita que la columna (taula)
+            if ((0 <= i && i < matrixTable.length) && (0 <= j && j < matrixTable[0].length)) {
+                //Trec el 'else' i inverteixo amb '!' la condicio 
+                if (!(i == inputX && j == inputY)) {
+                    //En comptes de pintar, ha d'escriure el numeros
+                    let count = countNeighbours(i, j);
+                    matrixTable[i][j].innerText = count;
+                }
+            }
+        }
+    }
+}
+// https://codeberg.org/ksama/matrius-kevin-part2/src/branch/master/matrius.js
+/* COPIA D'EXERCICIS ANTERIORS */
+function countNeighbours(x, y) {
+    let count = 0;
+    for (let i = x - 1; i <= x + 1; i++) {
+        for (let j = y - 1; j <= y + 1; j++) {
+            //Fila mes gran a o igual a 0 i mes petita que la fila(taula)  
+            //Columna mes gran a i igual 0 i mes petita que la columna (taula)
+            if ((0 <= i && i < matrixTable.length) && (0 <= j && j < matrixTable[0].length)) {
+                if (i == x && j == y) {
+                    // per algun motiu el != false no va 
+                } else {
+                    /*if ((matrixTable[i][j].style.backgroundColor) == "red") { count++;}*/
+                    //Ara no ha de contar les pintades, ha de mirar la matrix mines
+                    if (matrixMines[i][j] == 1) {
+                        count++;
+                    }
+                }
+            }
+        }
+    }
+    return count;
+}
+/* COPIA D'EXERCICIS ANTERIORS */
+function paintAllNeighbours() {
+    //BORRAR FUNCION
+    explotarMines();
+    //Fa el bucle per buscar 
+    for (let i = 0; i < matrixTable.length; i++) {
+        for (let j = 0; j < matrixTable[i].length; j++) {
+            let count = countNeighbours(i, j);
+            matrixTable[i][j].innerText = count;
+        }
+    }
 }
 
