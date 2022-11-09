@@ -11,7 +11,6 @@ function inicialitzaJoc() {
     //Selecciona els dos imputs
     let rows = document.getElementById('inputRow').value;
     let cols = document.getElementById('inputCol').value;
-    //console.log('row', rows, 'col', cols);
 
     //Crea una taula
     const tbl = document.createElement("table");
@@ -25,17 +24,8 @@ function inicialitzaJoc() {
             let cell = document.createElement("td");
             //Posa una id
             cell.id = i + '-' + j;
-            //li posa la funciona a cada cella per event
-            cell.onclick = function (event) {
-                let pos = (event.target.id).split("-");
-                if (matrixMines[pos[0]][pos[1]] == 1) {
-                    explotarMines();
-                } else {
-                    matrixTable[pos[0]][pos[1]].style.background = "lightgray";
-                    console.log('Posicio: ', pos[0], " & ", pos[1], matrixMines[pos[0]][pos[1]]);
-
-                }
-            };
+            //Crida la funcion dins de a variable 'funcionClicar'
+            cell.onclick = funcionClicar;
             //Afegeix els <td> dintre del <tr> 
             row.appendChild(cell);
         }
@@ -50,24 +40,35 @@ function inicialitzaJoc() {
     matrixTable = matriuHTML()
     matrixBinari = matriuBinaria(rows, cols);
     matrixMines = inicialitzaMines(rows, cols, nMines);
-    explotarMines();
+    //explotarMines();
 }
 
 
+//li posa la funciona a cada cella per event
+var funcionClicar = function (event) {
+    let pos = (event.target.id).split("-");
+    if (matrixMines[pos[0]][pos[1]] == 1) {
+        explotarMines();
+        console.log("KABOOM");
+    } else {
+        matrixTable[pos[0]][pos[1]].style.background = "lightgray";
+        //console.log('Posicio: ', pos[0], " & ", pos[1], matrixMines[pos[0]][pos[1]]);
+
+    }
+};
 
 //Exercici 2
 function matriuHTML() {
     ///Agafa els fills del <tbody>
     let rows = document.querySelector("tbody").children
     //Inicialitza una matrix
-    let matrixBi = []
+    let mMatrixHTML = []
     //Recorre tots els fills de <tbody>
     for (var i = 0; i < rows.length; i++) {
         //Fica a la 'matrix' tots els fills de <tbody> 1 per 1
-        matrixBi.push(rows[i].children)
+        mMatrixHTML.push(rows[i].children);
     }
-    // console.log("matriu", matrix);
-    return matrixBi;
+    return mMatrixHTML;
 }
 
 function erase() {
@@ -83,9 +84,9 @@ function erase() {
 
 function matriuBinaria(midaX, midaY) {
     let finalMatrix = [];
-    for (let i = 0; i < midaY; i++) {
+    for (let i = 0; i < midaX; i++) {
         let arrayX = [];
-        for (let j = 0; j < midaX; j++) {
+        for (let j = 0; j < midaY; j++) {
             arrayX.push(0);
         }
         finalMatrix.push(arrayX);
@@ -99,21 +100,17 @@ function inicialitzaMines(midaX, midaY, nMines) {
     let finalMatrix = matriuBinaria(midaX, midaY);
     //Omple matrix same size
     let numTotal = 0;
-    console.log("midesx",midaX,"midey",midaY);
     if (midaX * midaY >= nMines) {
         do {
             let x = maxmin(0, midaX);
             let y = maxmin(0, midaY);
-            console.log("x",x,"y",y);
 
-            if (finalMatrix[y][x] == 0) {
-                finalMatrix[y][x] = 1;
+            if (finalMatrix[x][y] == 0) {
+                finalMatrix[x][y] = 1;
                 numTotal++;
             }
         } while (numTotal < nMines);
-    } else {
-        console.log("Se lo que intentabas");
-    }
+    } /*else {  console.log("Mina out of range");}*/
     return finalMatrix;
 }
 
@@ -121,7 +118,8 @@ function inicialitzaMines(midaX, midaY, nMines) {
 function explotarMines() {
     document.getElementById('git').innerText = nMines + " MAKE BOOM";
     for (let i = 0; i < matrixTable.length; i++) {
-        for (let j = 0; j < matrixTable.length; j++) {
+        //fallabaesto matrixTable 
+        for (let j = 0; j < matrixTable[i].length; j++) {
             if (matrixMines[i][j] == 1) {
                 matrixTable[i][j].style.background = "red";
             }
