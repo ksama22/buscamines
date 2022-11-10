@@ -11,6 +11,9 @@ function inicialitzaJoc() {
     //Selecciona els dos imputs
     let rows = document.getElementById('inputRow').value;
     let cols = document.getElementById('inputCol').value;
+    
+    //Indica la quantitat de mines
+    document.getElementById('git').innerText = "Hi han "+nMines+" mines. Taulell: "+rows+"x"+cols+"";
 
     //Crea una taula
     const tbl = document.createElement("table");
@@ -38,11 +41,13 @@ function inicialitzaJoc() {
     tbl.appendChild(tblBody);
     //Afegeix la <table> a <div> amb id 'taulell"
     document.getElementById('taulell').appendChild(tbl);
+    console.log("Taulell creat");
+
     //Emplena la variable matrix
     matrixTable = matriuHTML()
     matrixBinari = matriuBinaria(rows, cols);
     matrixMines = inicialitzaMines(rows, cols, nMines);
-    //explotarMines();
+    //explotarMines();   
 }
 
 
@@ -50,23 +55,21 @@ function inicialitzaJoc() {
 var funcionClicar = function (event) {
     let pos = (event.target.id).split("-");
     if (matrixMines[pos[0]][pos[1]] == 1) {
+        console.log("Era una mina: ("+ pos[0]+ ', '+ pos[1]+")");
+        //Descobreix totes les mines
         explotarMines();
-        console.log("KABOOM");
     } else {
         // Pinta un cercle al voltant de la casella selecionada
-        console.log('posarray', pos[0], ' - ', pos[1], 'paintNeighbours(' + pos[0] + "," + pos[1] + ")");
-        //paintNeighbours(pos[0], pos[1]); //es en bucle?
+        console.log('NO era una mina: ('+ pos[0]+ ', '+ pos[1]+')'); // 'paintNeighbours(' + pos[0] + "," + pos[1] + ")"
         // Pinta el mitg de gris
         matrixTable[pos[0]][pos[1]].style.background = "lightgray";
-        //console.log('Posicio: ', pos[0], " & ", pos[1], matrixMines[pos[0]][pos[1]]);
-
     }
 };
 
 //Exercici 2
 function matriuHTML() {
     ///Agafa els fills del <tbody>
-    let rows = document.querySelector("tbody").children
+    let rows = document.querySelector("tbody").children;
     //Inicialitza una matrix
     let mMatrixHTML = []
     //Recorre tots els fills de <tbody>
@@ -122,7 +125,7 @@ function inicialitzaMines(midaX, midaY, nMines) {
 
 //Comproba que pinta per 'x' & 'y', cridar despres de inicialitzaJoc()
 function explotarMines() {
-    document.getElementById('git').innerText = nMines + " MAKE BOOM";
+    document.getElementById('git').innerText = "Game Over";
     for (let i = 0; i < matrixTable.length; i++) {
         //fallabaesto matrixTable 
         for (let j = 0; j < matrixTable[i].length; j++) {
@@ -164,9 +167,6 @@ function countNeighbours(x, y) {
             //Fila mes gran a o igual a 0 i mes petita que la fila(taula)  
             //Columna mes gran a i igual 0 i mes petita que la columna (taula)
             if ((0 <= i && i < matrixTable.length) && (0 <= j && j < matrixTable[0].length)) {
-                if (i == x && j == y) {
-                    // per algun motiu el != false no va 
-                } else {
                     /*if ((matrixTable[i][j].style.backgroundColor) == "red") { count++;}*/
                     //Ara no ha de contar les pintades, ha de mirar la matrix mines
                     if (matrixMines[i][j] == 1) {
@@ -175,7 +175,6 @@ function countNeighbours(x, y) {
                 }
             }
         }
-    }
     return count;
 }
 /* COPIA D'EXERCICIS ANTERIORS */
