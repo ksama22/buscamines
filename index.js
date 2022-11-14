@@ -2,6 +2,7 @@
 var matrixTable = null;
 var matrixMines = null;
 var matriuBinari = null;
+var colorMina = "blue";
 var nMines = 8;
 
 //Exercici 2
@@ -11,9 +12,9 @@ function inicialitzaJoc() {
     //Selecciona els dos imputs
     let rows = document.getElementById('inputRow').value;
     let cols = document.getElementById('inputCol').value;
-    
+
     //Indica la quantitat de mines
-    document.getElementById('git').innerText = "Hi han "+nMines+" mines. Taulell: "+rows+"x"+cols+"";
+    document.getElementById('git').innerText = "Hi han " + nMines + " mines. Taulell: " + rows + "x" + cols + "";
 
     //Crea una taula
     const tbl = document.createElement("table");
@@ -27,8 +28,8 @@ function inicialitzaJoc() {
             let cell = document.createElement("td");
             //Posa una id
             cell.id = i + '-' + j;
-            //Un padding buit es veu estrany al ficar el 1r numero
-            cell.innerText=".";
+            //Un padding buit es veu estrany al ficar el un buit
+            cell.innerHTML = "&nbsp";
             //Crida la funcion dins de a variable 'funcionClicar'
             cell.onclick = funcionClicar;
             //Afegeix els <td> dintre del <tr> 
@@ -55,16 +56,18 @@ function inicialitzaJoc() {
 var funcionClicar = function (event) {
     let pos = (event.target.id).split("-");
     if (matrixMines[pos[0]][pos[1]] == 1) {
-        console.log("Era una mina: ("+ pos[0]+ ', '+ pos[1]+")");
+        console.log("Era una mina: (" + pos[0] + ', ' + pos[1] + ")");
         //Descobreix totes les mines
         explotarMines();
     } else {
         // Pinta un cercle al voltant de la casella selecionada
-        console.log('NO era una mina: ('+ pos[0]+ ', '+ pos[1]+')'); // 'paintNeighbours(' + pos[0] + "," + pos[1] + ")"
-        // Pinta el mitg de gris
-        matrixTable[pos[0]][pos[1]].style.background = "lightgray";
+        console.log('NO era una mina:');
+        // Pinta les caselles del voltant i el numero 0 a color
+        paintNeighbours(parseInt(pos[0]), parseInt(pos[1]));
     }
 };
+
+
 
 //Exercici 2
 function matriuHTML() {
@@ -149,10 +152,14 @@ function paintNeighbours(inputX, inputY) {
             //Columna mes gran a i igual 0 i mes petita que la columna (taula)
             if ((0 <= i && i < matrixTable.length) && (0 <= j && j < matrixTable[0].length)) {
                 //Trec el 'else' i inverteixo amb '!' la condicio 
-                if (!(i == inputX && j == inputY)) {
-                    //En comptes de pintar, ha d'escriure el numeros
-                    let count = countNeighbours(i, j);
-                    matrixTable[i][j].innerText = count;
+                //En comptes de pintar, ha d'escriure el numeros
+                let count = countNeighbours(i, j);
+                matrixTable[i][j].innerText = count;
+
+                //En el moment que conta la mina pinta de color la casella
+                if (count == 0) {
+                    //Si es 0, no hi a mina i es
+                    matrixTable[i][j].style.background = colorMina;
                 }
             }
         }
@@ -167,14 +174,14 @@ function countNeighbours(x, y) {
             //Fila mes gran a o igual a 0 i mes petita que la fila(taula)  
             //Columna mes gran a i igual 0 i mes petita que la columna (taula)
             if ((0 <= i && i < matrixTable.length) && (0 <= j && j < matrixTable[0].length)) {
-                    /*if ((matrixTable[i][j].style.backgroundColor) == "red") { count++;}*/
-                    //Ara no ha de contar les pintades, ha de mirar la matrix mines
-                    if (matrixMines[i][j] == 1) {
-                        count++;
-                    }
+                /*if ((matrixTable[i][j].style.backgroundColor) == "red") { count++;}*/
+                //Ara no ha de contar les pintades, ha de mirar la matrix mines
+                if (matrixMines[i][j] == 1) {
+                    count++;
                 }
             }
         }
+    }
     return count;
 }
 /* COPIA D'EXERCICIS ANTERIORS */
