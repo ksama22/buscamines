@@ -31,7 +31,8 @@ function inicialitzaJoc() {
             //Un padding buit es veu estrany al ficar el un buit
             cell.innerHTML = "&nbsp";
             //Crida la funcion dins de a variable 'funcionClicar'
-            cell.onclick = funcionClicar;
+            cell.onclick = funcionClickIzquierdo;
+            cell.oncontextmenu = funcionClickDerecho;
             //Afegeix els <td> dintre del <tr> 
             row.appendChild(cell);
         }
@@ -53,7 +54,7 @@ function inicialitzaJoc() {
 
 
 //li posa la funciona a cada cella per event
-var funcionClicar = function (event) {
+var funcionClickIzquierdo = function (event) {
     let pos = (event.target.id).split("-");
     if (matrixMines[pos[0]][pos[1]] == 1) {
         console.log("Era una mina: (" + pos[0] + ', ' + pos[1] + ")");
@@ -66,6 +67,15 @@ var funcionClicar = function (event) {
         paintNeighbours(parseInt(pos[0]), parseInt(pos[1]));
     }
 };
+
+var funcionClickDerecho = function (event) {
+    let pos = (event.target.id).split("-");
+    let i = parseInt(pos[0]);
+    let j = parseInt(pos[1]);
+    matrixTable[i][j].innerHTML = "🚩";
+    console.log("ESTO CHUTA ", pos[0], pos[1]);
+
+}
 
 
 
@@ -128,13 +138,19 @@ function inicialitzaMines(midaX, midaY, nMines) {
 
 //Comproba que pinta per 'x' & 'y', cridar despres de inicialitzaJoc()
 function explotarMines() {
-    document.getElementById('git').innerText = "Game Over";
+    document.getElementById('git').innerText = "Has perdut: Game Over";
     for (let i = 0; i < matrixTable.length; i++) {
         //fallabaesto matrixTable 
         for (let j = 0; j < matrixTable[i].length; j++) {
             if (matrixMines[i][j] == 1) {
                 matrixTable[i][j].style.background = "red";
+
             }
+
+            // Desactiva tots el  td
+            matrixTable[i][j].innerText = "BOOM";
+            matrixTable[i][j].disabled = true;
+
         }
     }
 }
