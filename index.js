@@ -5,6 +5,18 @@ var matriuBinari = null;
 var colorMina = "blue";
 var nMines = 8;
 
+
+//Variables timer
+var velocity = 800;
+var seconds = 0;
+var Interval;
+
+//Busca mina
+var numMinesTrobades = 0;
+var totalMines = null;
+var totalLliures = null;
+var totalCaselles = null;
+
 //Exercici 2
 function inicialitzaJoc() {
     //Esborra la taula creada (si ha sigut creada)
@@ -12,6 +24,9 @@ function inicialitzaJoc() {
     //Selecciona els dos imputs
     let rows = document.getElementById('inputRow').value;
     let cols = document.getElementById('inputCol').value;
+
+    //Guarda cuantes caselles hi han en total
+    totalCaselles = rows * cols;
 
     //Indica la quantitat de mines
     document.getElementById('git').innerText = "Hi han " + nMines + " mines. Taulell: " + rows + "x" + cols + "";
@@ -63,11 +78,24 @@ var funcionClickIzquierdo = function (event) {
     } else {
         // Pinta un cercle al voltant de la casella selecionada
         console.log('NO era una mina:');
+        minesTrobades();;
+
         // Pinta les caselles del voltant i el numero 0 a color
         paintNeighbours(parseInt(pos[0]), parseInt(pos[1]));
     }
 };
 
+function minesTrobades() {
+    let totalMines = nMines;
+    let casellesSenseMines = totalCaselles - nMines;
+    numMinesTrobades++;
+    console.log("Trobada:", numMinesTrobades, "Total:", totalMines, "Has de trobal", casellesSenseMines);
+    if (casellesSenseMines == numMinesTrobades) {
+        stopTime();
+        console.log("GUANYADOR");
+        document.getElementById("guanyador").style.display = "block";
+    }
+}
 var funcionClickDerecho = function (event) {
     let pos = (event.target.id).split("-");
     let i = parseInt(pos[0]);
@@ -100,8 +128,14 @@ function erase() {
     while (taulell.firstChild) {
         //Borra el primer fill
         taulell.removeChild(taulell.firstChild);
+        //Acabat el bucle 'taulell' no tindria cap fill
     }
-    //Acabat el bucle 'taulell' no tindria cap fill
+
+    // Reinicia el joc
+    totalMines = 0;
+    totalLliures = 0;
+    totalCaselles = 0;
+    numMinesTrobades = 0;
 }
 
 function matriuBinaria(midaX, midaY) {
@@ -153,6 +187,9 @@ function explotarMines() {
 
         }
     }
+
+    //Para el temps
+    stopTime()
 }
 
 function maxmin(min, max) {
@@ -213,3 +250,85 @@ function paintAllNeighbours() {
     }
 }
 
+//Inicia el contador
+function startTime() {
+    //
+    resetTime();
+    // clearInterval(Interval);
+    Interval = setInterval(startTimer, velocity);
+    document.getElementById("day-today").innerText = getDateToday();
+}
+
+//Para de contar
+function stopTime() {
+    clearInterval(Interval);
+}
+
+//Fa reset del contador i el mostra
+function resetTime() {
+    let appendSeconds = document.getElementById("timer");
+    clearInterval(Interval);
+    seconds = "0";
+    appendSeconds.innerHTML = "START";
+}
+
+//Inicia el temporitzador
+function startTimer() {
+    let appendSeconds = document.getElementById("timer");
+    if (seconds < 10) {
+        //Si els segons son menos a 10, es mostra 01, 02
+        appendSeconds.innerHTML = "0" + seconds;
+    } else {
+        //Si els segons son major a 10, es mostra 11,12,13
+        appendSeconds.innerHTML = seconds;
+    }
+    seconds++;
+}
+
+//Retorna la date de avui
+function getDateToday() {
+    const d = new Date();
+    day = d.getDate();
+    month = d.getMonth() + 1;
+    year = d.getFullYear();
+    return `${day}/${month}/${year}`
+}
+
+function onWinUser() {
+    let nom = document.getElementById("nom-guanyar").value;
+    if (nom != "") {
+        localStorage.setItem(nom, seconds);
+    } else {
+        alert("Omple el camp 'nom'");
+    }
+    document.getElementById("guanyador").style.display = "none";
+
+    //Mostra la taula de resultats
+    let score = document.getElementById("puntuacio");
+    generateListScore(score);
+}
+
+//Crea Score
+function generateListScore(father) {
+    //Borra la llista anterior
+    while (father.firstChild) {
+        taulell.removeChild(taulell.firstChild);
+        //Acabat el bucle 'taulell' no tindria cap fill
+    }
+
+    // Crea el <ul>
+    let ul = document.createElement("ul");
+
+    //Text del <li>
+    ul.innerText = "Score"
+    //Llista tots el localStorage
+    let lStorage = Object.keys(localStorage);
+    let lValue = Object.values(localStorage);
+    for (let i = 0; i < lStorage.length; i++) {
+        //Crea el <li>
+        let li = document.createElement("li");
+        li.innerText = lStorage[i] + " -  " + lValue[i]+"'s";
+        ul.appendChild(li);
+    }
+    father.appendChild(ul)
+}
