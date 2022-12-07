@@ -2,6 +2,8 @@
 var matrixTable = null;
 var matrixMines = null;
 var matriuBinari = null;
+var matriuClicat = null;
+//https://learnersbucket.com/examples/algorithms/flood-fill-algorithm-in-javascript/
 var colorMina = "blue";
 var nMines = 8;
 
@@ -16,29 +18,36 @@ var numMinesTrobades = 0;
 var totalMines = null;
 var totalLliures = null;
 var totalCaselles = null;
-
+var isInput = true;
+let mrows = null;
+let mcols = null;
 //Exercici 2
 function inicialitzaJoc() {
     //Esborra la taula creada (si ha sigut creada)
     erase();
-    //Selecciona els dos imputs
-    let rows = document.getElementById('inputRow').value;
-    let cols = document.getElementById('inputCol').value;
-
+    let typeHtml = document.getElementById('selecttaula').selectedOptions[0].value;
+    if (typeHtml == "0") {
+        mrows = parseInt(document.getElementById('inputRow').value);
+        mcols = parseInt(document.getElementById('inputCol').value);
+    } else {
+        //Utilitza els valos del deplegable
+        //Omple mrows, mcols, nmines
+        newGameWithThisTable();
+    }
     //Guarda cuantes caselles hi han en total
-    totalCaselles = rows * cols;
+    totalCaselles = mrows * mcols;
 
     //Indica la quantitat de mines
-    document.getElementById('git').innerText = "Hi han " + nMines + " mines. Taulell: " + rows + "x" + cols + "";
+    document.getElementById('git').innerText = "Hi han " + nMines + " mines. Taulell: " + mrows + "x" + mcols + "";
 
     //Crea una taula
     const tbl = document.createElement("table");
     //Crea un element <tbody>
     const tblBody = document.createElement("tbody");
     //Crea tants <tr> com rows
-    for (let i = 0; i < rows; i++) {
+    for (let i = 0; i < mrows; i++) {
         const row = document.createElement("tr");
-        for (let j = 0; j < cols; j++) {
+        for (let j = 0; j < mcols; j++) {
             //Crea tants <td> com cols
             let cell = document.createElement("td");
             //Posa una id
@@ -62,11 +71,25 @@ function inicialitzaJoc() {
 
     //Emplena la variable matrix
     matrixTable = matriuHTML()
-    matrixBinari = matriuBinaria(rows, cols);
-    matrixMines = inicialitzaMines(rows, cols, nMines);
+    matrixBinari = matriuBinaria(mrows, mcols);
+    matrixMines = inicialitzaMines(mrows, mcols, nMines);
     //explotarMines();   
 }
 
+
+//Aquesta funcio es crida al cambiard
+function mostraInputs() {
+    let typeHtml = document.getElementById('selecttaula').selectedOptions[0].value;
+    let inrow = document.getElementById("inputRow");
+    let incol = document.getElementById("inputCol");
+    if (typeHtml == "0") {
+        inrow.style.display = "inline";
+        incol.style.display = "inline";
+    } else {
+        inrow.style.display = "none";
+        incol.style.display = "none";
+    }
+}
 
 //li posa la funciona a cada cella per event
 var funcionClickIzquierdo = function (event) {
@@ -96,13 +119,12 @@ function minesTrobades() {
         document.getElementById("guanyador").style.display = "block";
     }
 }
+//Posa bandereta al click dret casella
 var funcionClickDerecho = function (event) {
     let pos = (event.target.id).split("-");
     let i = parseInt(pos[0]);
     let j = parseInt(pos[1]);
     matrixTable[i][j].innerHTML = "🚩";
-    console.log("ESTO CHUTA ", pos[0], pos[1]);
-
 }
 
 
@@ -199,6 +221,7 @@ function maxmin(min, max) {
 /* COPIA D'EXERCICIS ANTERIORS */
 // Pinta un cercle al voltant de la casella selecionada
 function paintNeighbours(inputX, inputY) {
+
     for (let i = inputX - 1; i <= inputX + 1; i++) {
         for (let j = inputY - 1; j <= inputY + 1; j++) {
             //Fila mes gran a o igual a 0 i mes petita que la fila(taula)  
@@ -217,6 +240,7 @@ function paintNeighbours(inputX, inputY) {
             }
         }
     }
+
 }
 // https://codeberg.org/ksama/matrius-kevin-part2/src/branch/master/matrius.js
 /* COPIA D'EXERCICIS ANTERIORS */
@@ -316,19 +340,63 @@ function generateListScore(father) {
         //Acabat el bucle 'taulell' no tindria cap fill
     }
 
-    // Crea el <ul>
-    let ul = document.createElement("ul");
 
-    //Text del <li>
-    ul.innerText = "Score"
     //Llista tots el localStorage
     let lStorage = Object.keys(localStorage);
     let lValue = Object.values(localStorage);
+    //Crea la taula
+    let taula = document.createElement("table");
+    let headtitol = document.createElement("th");
+    let td1 = document.createElement("td");
+    td1.innerText = "Name";
+    let td2 = document.createElement("td");
+    td2.innerText = "Time";
+    titol1.appendChild(td1);
+    titol1.appendChild(td2);
+    taula.appendChild(headtitol);
     for (let i = 0; i < lStorage.length; i++) {
-        //Crea el <li>
-        let li = document.createElement("li");
-        li.innerText = lStorage[i] + " -  " + lValue[i]+"'s";
-        ul.appendChild(li);
+        let tr1 = document.createElement("tr");
+        let td1 = document.createElement("td");
+        td1.innerText = lStorage[i]
+        let td2 = document.createElement("td");
+        td2.innerText = lValue[i]
+        tr1.appendChild(td1)
+        tr1.appendChild(td2)
+        taula.appendChild(tr1);
     }
-    father.appendChild(ul)
+    father.appendChild(taula)
+}
+
+function newGameWithThisTable() {
+    let nvalue = document.getElementById('selecttaula').selectedOptions[0].value;
+    switch (nvalue) {
+        case "1":
+            mrows = 9;
+            mcols = 9;
+            nMines = 35;
+            break;
+        case "2":
+            mrows = 9;
+            mcols = 9;
+            nMines = 35;
+            break;
+        case "3":
+            mrows = 16;
+            mcols = 16;
+            nMines = 99;
+            break;
+        case "4":
+            mrows = 30;
+            mcols = 16;
+            nMines = 99;
+            break;
+        case "5":
+            mrows = 30;
+            mcols = 16;
+            nMines = 170;
+            break;
+        default:
+            break;
+    }
+
 }

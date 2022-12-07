@@ -12,14 +12,25 @@
 
 <body>
 
-
     <!-- Input de les dimensions de la taula-->
-    <input id="inputRow" type="number" placeholder="Number Rows">
-    <input id="inputCol" type="number" placeholder="Number Col">
+    <select id="selecttaula" onchange="mostraInputs()" class="form-select" aria-label="Generation List">
+        <option selected value="0">Inputs</option>
+        <option value="1">9x9, 10 mines</option>
+        <option value="2">9x9, 35 mines</option>
+        <option value="3">16x16, 99 mines</option>
+        <option value="4">30x16, 99 mines</option>
+        <option value="5">30x16, 170 mines</option>
+    </select>
+
+    <input id="inputRow" min="1" type="number" placeholder="Number Rows">
+    <input id="inputCol" min="1" type="number" placeholder="Number Col">
+
+
+
     <!-- Button per inciar taula i el temps -->
     <button onclick="inicialitzaJoc(), startTime()">Reinicia Taulell</button>
-     <!-- Taula puntuacio a partir del LocalStorage-->
-     <div id="puntuacio"></div>
+    <!-- Taula puntuacio a partir del LocalStorage-->
+    <div id="puntuacio"></div>
     <!-- Informacion text-->
     <h2 id="git"></h2>
     <!-- Quant guanya et deixa escriure nom -->
@@ -34,6 +45,7 @@
     <div id="taulell"></div>
     <!-- El Contador carrega despres de iniciar-->
     <!-- <script src="timer.js"></script> -->
+
 </body>
 
 </html>
