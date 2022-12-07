@@ -351,8 +351,8 @@ function generateListScore(father) {
     td1.innerText = "Name";
     let td2 = document.createElement("td");
     td2.innerText = "Time";
-    titol1.appendChild(td1);
-    titol1.appendChild(td2);
+    headtitol.appendChild(td1);
+    headtitol.appendChild(td2);
     taula.appendChild(headtitol);
     for (let i = 0; i < lStorage.length; i++) {
         let tr1 = document.createElement("tr");
