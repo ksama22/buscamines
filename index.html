@@ -24,22 +24,22 @@
 
     <input id="inputRow" min="1" type="number" placeholder="Number Rows">
     <input id="inputCol" min="1" type="number" placeholder="Number Col">
+    <input id="inputMines" min="1" type="number" placeholder="Number Mines">
 
 
 
     <!-- Button per inciar taula i el temps -->
     <button onclick="inicialitzaJoc(), startTime()">Reinicia Taulell</button>
     <!-- Taula puntuacio a partir del LocalStorage-->
-    <div id="puntuacio"></div>
+    <h3>Score:  <span id="puntuacio"></span></h3>
     <!-- Informacion text-->
-    <h2 id="git"></h2>
     <!-- Quant guanya et deixa escriure nom -->
     <div id="guanyador" style="display: none"> Has guanyat:
         <input id="nom-guanyar" type="text" placeholder="Escriu el teu nom">
         <button onclick="onWinUser()">Guardar</button>
     </div>
     <!-- Dia d'avui i temps emprat-->
-    <h3>Dia: <span id="day-today"></span> Temps: <span id="timer">00</span></h3>
+    <h3> <span id="git"></span> Dia: <span id="day-today"></span> Temps: <span id="timer">00</span></h3>
     <!-- Pescamines-->
     <!-- <button onclick="inicialitzaMines()">Mines</button> -->
     <div id="taulell"></div>

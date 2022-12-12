@@ -4,9 +4,8 @@ var matrixMines = null;
 var matriuBinari = null;
 var matriuClicat = null;
 //https://learnersbucket.com/examples/algorithms/flood-fill-algorithm-in-javascript/
-var colorMina = "blue";
+var colorMina = "lightblue";
 var nMines = 8;
-
 
 //Variables timer
 var velocity = 800;
@@ -29,6 +28,7 @@ function inicialitzaJoc() {
     if (typeHtml == "0") {
         mrows = parseInt(document.getElementById('inputRow').value);
         mcols = parseInt(document.getElementById('inputCol').value);
+        nMines = parseInt(document.getElementById('inputMines').value);
     } else {
         //Utilitza els valos del deplegable
         //Omple mrows, mcols, nmines
@@ -73,6 +73,10 @@ function inicialitzaJoc() {
     matrixTable = matriuHTML()
     matrixBinari = matriuBinaria(mrows, mcols);
     matrixMines = inicialitzaMines(mrows, mcols, nMines);
+
+    //Prepara la matriu de clicat per a la funcion recursiva
+    matriuClicat = matrixMines;
+
     //explotarMines();   
 }
 
@@ -101,10 +105,9 @@ var funcionClickIzquierdo = function (event) {
     } else {
         // Pinta un cercle al voltant de la casella selecionada
         console.log('NO era una mina:');
-        minesTrobades();;
-
         // Pinta les caselles del voltant i el numero 0 a color
-        paintNeighbours(parseInt(pos[0]), parseInt(pos[1]));
+        //RECURSIVO
+        fillMatrix1(matriuClicat, parseInt(pos[0]), parseInt(pos[1]));
     }
 };
 
@@ -200,11 +203,10 @@ function explotarMines() {
         for (let j = 0; j < matrixTable[i].length; j++) {
             if (matrixMines[i][j] == 1) {
                 matrixTable[i][j].style.background = "red";
-
+                matrixTable[i][j].innerText = "BOOM";
             }
 
             // Desactiva tots el  td
-            matrixTable[i][j].innerText = "BOOM";
             matrixTable[i][j].disabled = true;
 
         }
@@ -220,40 +222,48 @@ function maxmin(min, max) {
 
 /* COPIA D'EXERCICIS ANTERIORS */
 // Pinta un cercle al voltant de la casella selecionada
-function paintNeighbours(inputX, inputY) {
+function fillMatrix1(matrix, row, col) {
 
-    for (let i = inputX - 1; i <= inputX + 1; i++) {
-        for (let j = inputY - 1; j <= inputY + 1; j++) {
-            //Fila mes gran a o igual a 0 i mes petita que la fila(taula)  
-            //Columna mes gran a i igual 0 i mes petita que la columna (taula)
-            if ((0 <= i && i < matrixTable.length) && (0 <= j && j < matrixTable[0].length)) {
-                //Trec el 'else' i inverteixo amb '!' la condicio 
-                //En comptes de pintar, ha d'escriure el numeros
-                let count = countNeighbours(i, j);
-                matrixTable[i][j].innerText = count;
 
-                //En el moment que conta la mina pinta de color la casella
-                if (count == 0) {
-                    //Si es 0, no hi a mina i es
-                    matrixTable[i][j].style.background = colorMina;
-                }
-            }
-        }
-    }
+ 
+
+    if (!validCoordinates(matrix, row, col))
+        return;
+
+    if (matrix[row][col] == 1)
+        return;
+
+    let count =  countNeighbours(matrix, matrixTable,row, col);
+    matrixTable[row][col].innerText = count;
+    matrixTable[row][col].style.background = colorMina;
+
+    matrix[row][col] = 1;
+    minesTrobades();
+
+    fillMatrix1(matrix, row + 1, col);
+    fillMatrix1(matrix, row - 1, col);
+    fillMatrix1(matrix, row, col + 1);
+    fillMatrix1(matrix, row, col - 1);
+
 
 }
+
+//https://codeguppy.com/blog/flood-fill/index.html
+function validCoordinates(matrix, row, col) {
+    return (row >= 0 && row < matrix.length && col >= 0 && col < matrix[row].length);}
+
 // https://codeberg.org/ksama/matrius-kevin-part2/src/branch/master/matrius.js
 /* COPIA D'EXERCICIS ANTERIORS */
-function countNeighbours(x, y) {
+function countNeighbours(matriuClica, matriuHTML,x, y) {
     let count = 0;
     for (let i = x - 1; i <= x + 1; i++) {
         for (let j = y - 1; j <= y + 1; j++) {
             //Fila mes gran a o igual a 0 i mes petita que la fila(taula)  
             //Columna mes gran a i igual 0 i mes petita que la columna (taula)
-            if ((0 <= i && i < matrixTable.length) && (0 <= j && j < matrixTable[0].length)) {
+            if ((0 <= i && i < matriuHTML.length) && (0 <= j && j < matrixTable[0].length)) {
                 /*if ((matrixTable[i][j].style.backgroundColor) == "red") { count++;}*/
                 //Ara no ha de contar les pintades, ha de mirar la matrix mines
-                if (matrixMines[i][j] == 1) {
+                if (matriuClica[i][j] == 1) {
                     count++;
                 }
             }
@@ -346,10 +356,10 @@ function generateListScore(father) {
     let lValue = Object.values(localStorage);
     //Crea la taula
     let taula = document.createElement("table");
-    let headtitol = document.createElement("th");
-    let td1 = document.createElement("td");
+    let headtitol = document.createElement("tr");
+    let td1 = document.createElement("th");
     td1.innerText = "Name";
-    let td2 = document.createElement("td");
+    let td2 = document.createElement("th");
     td2.innerText = "Time";
     headtitol.appendChild(td1);
     headtitol.appendChild(td2);
@@ -373,7 +383,7 @@ function newGameWithThisTable() {
         case "1":
             mrows = 9;
             mcols = 9;
-            nMines = 35;
+            nMines = 10;
             break;
         case "2":
             mrows = 9;
